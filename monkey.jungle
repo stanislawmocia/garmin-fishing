@@ -1,0 +1,20 @@
+# Garmin Fishing Log Application - Fenix 6 Pro
+# Monkey C Project Configuration
+
+project.manifest = manifest.xml
+
+# Base source directory
+base.sourcePath = source
+
+# Resources
+base.resourcePath = resources
+
+# Main application entry point
+base.sourcePath = $(base.sourcePath);$(base.sourcePath)/interfaces;$(base.sourcePath)/models;$(base.sourcePath)/services;$(base.sourcePath)/views
+
+# Target device: Fenix 6 Pro
+fenix6pro.sourcePath = $(base.sourcePath)
+fenix6pro.resourcePath = $(base.resourcePath)
+
+# Test annotation support
+base.barrelEnabled = true
