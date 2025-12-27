@@ -1,0 +1,10 @@
+<resources>
+    <!-- JSON Data -->
+    <jsonData id="baits">jsondata/baits.json</jsonData>
+
+    <!-- Strings -->
+    <strings filename="strings/strings.xml" />
+
+    <!-- Drawables -->
+    <drawables filename="drawables/drawables.xml" />
+</resources>

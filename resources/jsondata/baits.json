@@ -1,0 +1,52 @@
+[
+    {
+        "id": 1,
+        "name": "Plastic Worm",
+        "type": "Soft Plastic"
+    },
+    {
+        "id": 2,
+        "name": "Crankbait",
+        "type": "Hard Bait"
+    },
+    {
+        "id": 3,
+        "name": "Spinnerbait",
+        "type": "Spinner"
+    },
+    {
+        "id": 4,
+        "name": "Jig",
+        "type": "Jig"
+    },
+    {
+        "id": 5,
+        "name": "Topwater Popper",
+        "type": "Topwater"
+    },
+    {
+        "id": 6,
+        "name": "Live Minnow",
+        "type": "Live Bait"
+    },
+    {
+        "id": 7,
+        "name": "Nightcrawler",
+        "type": "Live Bait"
+    },
+    {
+        "id": 8,
+        "name": "Spoon",
+        "type": "Metal Lure"
+    },
+    {
+        "id": 9,
+        "name": "Buzzbait",
+        "type": "Buzzbait"
+    },
+    {
+        "id": 10,
+        "name": "Frog Lure",
+        "type": "Topwater"
+    }
+]

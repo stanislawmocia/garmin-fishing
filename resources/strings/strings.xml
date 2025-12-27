@@ -1,0 +1,39 @@
+<resources>
+    <strings>
+        <string id="AppName">Fishing Log</string>
+
+        <!-- Menu Items -->
+        <string id="MenuLogCatch">Log Catch</string>
+        <string id="MenuViewCatches">View Catches</string>
+        <string id="MenuSync">Sync Data</string>
+        <string id="MenuSettings">Settings</string>
+
+        <!-- Log Catch Flow -->
+        <string id="SelectBait">Select Bait</string>
+        <string id="EnterSpecies">Enter Species</string>
+        <string id="EnterWeight">Weight (lbs)</string>
+        <string id="EnterLength">Length (in)</string>
+        <string id="SaveCatch">Save</string>
+        <string id="CancelCatch">Cancel</string>
+
+        <!-- Confirmation Messages -->
+        <string id="CatchSaved">Catch Saved!</string>
+        <string id="CatchSaveFailed">Failed to Save</string>
+        <string id="SyncComplete">Sync Complete</string>
+        <string id="SyncFailed">Sync Failed</string>
+        <string id="NoConnection">No Phone Connection</string>
+
+        <!-- Species Options -->
+        <string id="SpeciesBass">Bass</string>
+        <string id="SpeciesTrout">Trout</string>
+        <string id="SpeciesPike">Pike</string>
+        <string id="SpeciesSalmon">Salmon</string>
+        <string id="SpeciesCatfish">Catfish</string>
+        <string id="SpeciesWalleye">Walleye</string>
+        <string id="SpeciesOther">Other</string>
+
+        <!-- Empty States -->
+        <string id="NoCatches">No catches logged yet</string>
+        <string id="NoUnsyncedData">All data synced</string>
+    </strings>
+</resources>
