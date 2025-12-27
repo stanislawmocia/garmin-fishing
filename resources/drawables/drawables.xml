@@ -1,4 +1,5 @@
 <drawables>
     <!-- Launcher Icon -->
-    <bitmap id="LauncherIcon" filename="launcher_icon.png" />
+    <!-- TODO: Create launcher_icon.png (80x80px for fenix6pro) -->
+    <!-- For now, using default Garmin icon -->
 </drawables>
