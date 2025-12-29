@@ -10,10 +10,12 @@ class Catch {
     public var id;
     public var timestamp;
     public var baitId;
+    public var baitName;          // Added: Name of bait used
     public var species;
     public var weight;
     public var length;
     public var location;
+    public var weather;           // Added: Weather conditions at catch time
     public var synced;
 
     /**
@@ -24,10 +26,12 @@ class Catch {
         id = options.get(:id);
         timestamp = options.get(:timestamp);
         baitId = options.get(:baitId);
+        baitName = options.get(:baitName);
         species = options.get(:species);
         weight = options.get(:weight);
         length = options.get(:length);
         location = options.get(:location);
+        weather = options.get(:weather);
         synced = options.get(:synced) != null ? options.get(:synced) : false;
     }
 
@@ -40,10 +44,12 @@ class Catch {
             :id => id,
             :timestamp => timestamp,
             :baitId => baitId,
+            :baitName => baitName,
             :species => species,
             :weight => weight,
             :length => length,
             :location => location,
+            :weather => weather,
             :synced => synced
         };
     }

@@ -9,22 +9,28 @@ using Toybox.System;
 class BaitLoggerDelegate extends WatchUi.Menu2InputDelegate {
 
     private var _view;
-    private var _baitProvider;
+    private var _baitManager;
+    private var _speciesProvider;
+    private var _weatherService;
     private var _catchLogger;
     private var _syncService;
 
     /**
      * Constructor
      * @param view The parent view
-     * @param baitProvider IBaitProvider implementation
+     * @param baitManager IBaitManager implementation
+     * @param speciesProvider ISpeciesProvider implementation
+     * @param weatherService IWeatherService implementation
      * @param catchLogger ICatchLogger implementation
      * @param syncService ISyncService implementation
      */
-    function initialize(view, baitProvider, catchLogger, syncService) {
+    function initialize(view, baitManager, speciesProvider, weatherService, catchLogger, syncService) {
         Menu2InputDelegate.initialize();
 
         _view = view;
-        _baitProvider = baitProvider;
+        _baitManager = baitManager;
+        _speciesProvider = speciesProvider;
+        _weatherService = weatherService;
         _catchLogger = catchLogger;
         _syncService = syncService;
     }
@@ -50,8 +56,8 @@ class BaitLoggerDelegate extends WatchUi.Menu2InputDelegate {
      * @private
      */
     private function _handleLogCatch() {
-        var logCatchView = new LogCatchView(_baitProvider, _catchLogger);
-        var logCatchDelegate = new LogCatchDelegate(logCatchView, _baitProvider, _catchLogger);
+        var logCatchView = new LogCatchView(_baitManager, _speciesProvider, _catchLogger);
+        var logCatchDelegate = new LogCatchDelegate(logCatchView, _baitManager, _speciesProvider, _weatherService, _catchLogger);
 
         WatchUi.pushView(logCatchView, logCatchDelegate, WatchUi.SLIDE_LEFT);
     }

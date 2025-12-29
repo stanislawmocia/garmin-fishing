@@ -6,34 +6,38 @@ using Toybox.Time;
 
 /**
  * LogCatchView
- * Multi-step view for logging a new catch
+ * Multi-step view for logging a new catch with enhanced features
  * Step 1: Select Bait -> Step 2: Select Species -> Step 3: Enter Weight -> Step 4: Enter Length -> Save
+ * Features: Polish names, frequency-based sorting, weather capture
  */
 class LogCatchView extends WatchUi.Menu2 {
 
-    private var _baitProvider;
+    private var _baitManager;
+    private var _speciesProvider;
     private var _catchLogger;
 
     /**
      * Constructor
-     * @param baitProvider IBaitProvider implementation
+     * @param baitManager IBaitManager implementation
+     * @param speciesProvider ISpeciesProvider implementation
      * @param catchLogger ICatchLogger implementation
      */
-    function initialize(baitProvider, catchLogger) {
+    function initialize(baitManager, speciesProvider, catchLogger) {
         Menu2.initialize({:title => WatchUi.loadResource(Rez.Strings.SelectBait)});
 
-        _baitProvider = baitProvider;
+        _baitManager = baitManager;
+        _speciesProvider = speciesProvider;
         _catchLogger = catchLogger;
 
         _buildBaitMenu();
     }
 
     /**
-     * Build the bait selection menu
+     * Build the bait selection menu (sorted by frequency)
      * @private
      */
     private function _buildBaitMenu() {
-        var baits = _baitProvider.getBaits();
+        var baits = _baitManager.getBaitsSortedByFrequency();
 
         for (var i = 0; i < baits.size(); i++) {
             var bait = baits[i];
@@ -44,51 +48,51 @@ class LogCatchView extends WatchUi.Menu2 {
                 {}
             ));
         }
-    }
 
-    /**
-     * Get the bait provider
-     * @return IBaitProvider
-     */
-    function getBaitProvider() {
-        return _baitProvider;
-    }
-
-    /**
-     * Get the catch logger
-     * @return ICatchLogger
-     */
-    function getCatchLogger() {
-        return _catchLogger;
+        // Add option to add custom bait
+        addItem(new WatchUi.MenuItem(
+            WatchUi.loadResource(Rez.Strings.AddCustomBait),
+            null,
+            :add_custom_bait,
+            {}
+        ));
     }
 }
 
 /**
  * LogCatchDelegate
- * Handles bait selection and navigation to species selection
+ * Handles bait selection and navigation through catch logging flow
  */
 class LogCatchDelegate extends WatchUi.Menu2InputDelegate {
 
     private var _view;
-    private var _baitProvider;
+    private var _baitManager;
+    private var _speciesProvider;
+    private var _weatherService;
     private var _catchLogger;
     private var _selectedBaitId;
+    private var _selectedBaitName;
     private var _selectedSpecies;
     private var _selectedWeight;
     private var _selectedLength;
     private var _location;
+    private var _weather;
 
     /**
      * Constructor
      * @param view The parent view
-     * @param baitProvider IBaitProvider implementation
+     * @param baitManager IBaitManager implementation
+     * @param speciesProvider ISpeciesProvider implementation
+     * @param weatherService IWeatherService implementation
      * @param catchLogger ICatchLogger implementation
      */
-    function initialize(view, baitProvider, catchLogger) {
+    function initialize(view, baitManager, speciesProvider, weatherService, catchLogger) {
         Menu2InputDelegate.initialize();
 
         _view = view;
-        _baitProvider = baitProvider;
+        _baitManager = baitManager;
+        _speciesProvider = speciesProvider;
+        _weatherService = weatherService;
         _catchLogger = catchLogger;
 
         // Get current location if available
@@ -102,6 +106,9 @@ class LogCatchDelegate extends WatchUi.Menu2InputDelegate {
                 };
             }
         }
+
+        // Get current weather
+        _weather = _weatherService.getCurrentWeather();
     }
 
     /**
@@ -109,32 +116,42 @@ class LogCatchDelegate extends WatchUi.Menu2InputDelegate {
      * @param item The selected menu item
      */
     function onSelect(item as MenuItem) as Void {
-        _selectedBaitId = item.getId();
+        var itemId = item.getId();
+
+        if (itemId == :add_custom_bait) {
+            // TODO: Implement custom bait entry (TextPicker if available)
+            // For now, skip to species selection
+            _showSpeciesSelection();
+            return;
+        }
+
+        _selectedBaitId = itemId;
+
+        // Get bait name for storage
+        var bait = _baitManager.getBaitById(_selectedBaitId);
+        if (bait != null) {
+            _selectedBaitName = bait[:name];
+        }
+
+        // Record bait usage
+        _baitManager.recordBaitUsage(_selectedBaitId);
 
         // Move to species selection
         _showSpeciesSelection();
     }
 
     /**
-     * Show species selection menu
+     * Show species selection menu (sorted by frequency, Polish names)
      * @private
      */
     private function _showSpeciesSelection() {
         var speciesMenu = new WatchUi.Menu2({:title => WatchUi.loadResource(Rez.Strings.EnterSpecies)});
 
-        // Add species options
-        var species = [
-            Rez.Strings.SpeciesBass,
-            Rez.Strings.SpeciesTrout,
-            Rez.Strings.SpeciesPike,
-            Rez.Strings.SpeciesSalmon,
-            Rez.Strings.SpeciesCatfish,
-            Rez.Strings.SpeciesWalleye,
-            Rez.Strings.SpeciesOther
-        ];
+        // Get species sorted by frequency (most caught first)
+        var species = _speciesProvider.getSpeciesSortedByFrequency();
 
         for (var i = 0; i < species.size(); i++) {
-            var speciesName = WatchUi.loadResource(species[i]);
+            var speciesName = species[i];
             speciesMenu.addItem(new WatchUi.MenuItem(
                 speciesName,
                 null,
@@ -143,7 +160,15 @@ class LogCatchDelegate extends WatchUi.Menu2InputDelegate {
             ));
         }
 
-        var delegate = new SpeciesSelectionDelegate(self);
+        // Add option for custom species
+        speciesMenu.addItem(new WatchUi.MenuItem(
+            WatchUi.loadResource(Rez.Strings.AddCustomSpecies),
+            null,
+            :add_custom_species,
+            {}
+        ));
+
+        var delegate = new SpeciesSelectionDelegate(self, _speciesProvider);
         WatchUi.pushView(speciesMenu, delegate, WatchUi.SLIDE_LEFT);
     }
 
@@ -153,11 +178,15 @@ class LogCatchDelegate extends WatchUi.Menu2InputDelegate {
      */
     function onSpeciesSelected(species) {
         _selectedSpecies = species;
+
+        // Record species catch for frequency sorting
+        _speciesProvider.recordSpeciesCatch(species);
+
         _showWeightInput();
     }
 
     /**
-     * Show weight input using NumberPicker
+     * Show weight input using NumberPicker (kg)
      * @private
      */
     private function _showWeightInput() {
@@ -169,7 +198,7 @@ class LogCatchDelegate extends WatchUi.Menu2InputDelegate {
 
     /**
      * Handle weight selection callback
-     * @param weight Selected weight in pounds
+     * @param weight Selected weight in kg
      */
     function onWeightSelected(weight) {
         _selectedWeight = weight;
@@ -177,7 +206,7 @@ class LogCatchDelegate extends WatchUi.Menu2InputDelegate {
     }
 
     /**
-     * Show length input using NumberPicker
+     * Show length input using NumberPicker (cm)
      * @private
      */
     private function _showLengthInput() {
@@ -189,7 +218,7 @@ class LogCatchDelegate extends WatchUi.Menu2InputDelegate {
 
     /**
      * Handle length selection callback
-     * @param length Selected length in inches
+     * @param length Selected length in cm
      */
     function onLengthSelected(length) {
         _selectedLength = length;
@@ -198,26 +227,34 @@ class LogCatchDelegate extends WatchUi.Menu2InputDelegate {
 
     /**
      * Save the catch using ICatchLogger interface
+     * Includes: bait, species, weight, length, GPS, weather
      * @private
      */
     private function _saveCatch() {
         var catchObj = {
             :timestamp => Time.now().value(),
             :baitId => _selectedBaitId,
+            :baitName => _selectedBaitName,
             :species => _selectedSpecies,
             :weight => _selectedWeight,
             :length => _selectedLength,
             :location => _location,
+            :weather => _weather,
             :synced => false
         };
 
         // Call ICatchLogger.saveCatch()
         var success = _catchLogger.saveCatch(catchObj);
 
-        // Show confirmation
+        // Show confirmation with weather info
         var message = success ?
             WatchUi.loadResource(Rez.Strings.CatchSaved) :
             WatchUi.loadResource(Rez.Strings.CatchSaveFailed);
+
+        // Add weather info if available
+        if (success && _weather != null && _weather.hasKey(:temperature)) {
+            message += "\n" + _weather[:temperature] + "°C";
+        }
 
         WatchUi.pushView(
             new WatchUi.Confirmation(message),
@@ -248,19 +285,29 @@ class LogCatchDelegate extends WatchUi.Menu2InputDelegate {
 
 /**
  * SpeciesSelectionDelegate
- * Handles species selection
+ * Handles species selection with custom species support
  */
 class SpeciesSelectionDelegate extends WatchUi.Menu2InputDelegate {
 
     private var _parentDelegate;
+    private var _speciesProvider;
 
-    function initialize(parentDelegate) {
+    function initialize(parentDelegate, speciesProvider) {
         Menu2InputDelegate.initialize();
         _parentDelegate = parentDelegate;
+        _speciesProvider = speciesProvider;
     }
 
     function onSelect(item as MenuItem) as Void {
-        _parentDelegate.onSpeciesSelected(item.getId());
+        var itemId = item.getId();
+
+        if (itemId == :add_custom_species) {
+            // TODO: Implement custom species entry (TextPicker if available)
+            // For now, use "Inne" (Other)
+            _parentDelegate.onSpeciesSelected("Inne");
+        } else {
+            _parentDelegate.onSpeciesSelected(itemId);
+        }
     }
 
     function onBack() as Void {
@@ -270,7 +317,7 @@ class SpeciesSelectionDelegate extends WatchUi.Menu2InputDelegate {
 
 /**
  * WeightPickerDelegate
- * Handles weight input via NumberPicker
+ * Handles weight input via NumberPicker (kg)
  */
 class WeightPickerDelegate extends WatchUi.NumberPickerDelegate {
 
@@ -289,7 +336,7 @@ class WeightPickerDelegate extends WatchUi.NumberPickerDelegate {
 
 /**
  * LengthPickerDelegate
- * Handles length input via NumberPicker
+ * Handles length input via NumberPicker (cm)
  */
 class LengthPickerDelegate extends WatchUi.NumberPickerDelegate {
 

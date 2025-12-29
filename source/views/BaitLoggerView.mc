@@ -8,20 +8,20 @@ using Toybox.Lang;
  */
 class BaitLoggerView extends WatchUi.Menu2 {
 
-    private var _baitProvider;
+    private var _baitManager;
     private var _catchLogger;
     private var _syncService;
 
     /**
      * Constructor
-     * @param baitProvider IBaitProvider implementation
+     * @param baitManager IBaitManager implementation
      * @param catchLogger ICatchLogger implementation
      * @param syncService ISyncService implementation
      */
-    function initialize(baitProvider, catchLogger, syncService) {
-        Menu2.initialize({:title => "Fishing Log"});
+    function initialize(baitManager, catchLogger, syncService) {
+        Menu2.initialize({:title => WatchUi.loadResource(Rez.Strings.AppName)});
 
-        _baitProvider = baitProvider;
+        _baitManager = baitManager;
         _catchLogger = catchLogger;
         _syncService = syncService;
 

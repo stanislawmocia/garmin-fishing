@@ -1,39 +1,52 @@
 <resources>
     <strings>
-        <string id="AppName">Fishing Log</string>
+        <string id="AppName">Dziennik Połowów</string>
 
         <!-- Menu Items -->
-        <string id="MenuLogCatch">Log Catch</string>
-        <string id="MenuViewCatches">View Catches</string>
-        <string id="MenuSync">Sync Data</string>
-        <string id="MenuSettings">Settings</string>
+        <string id="MenuLogCatch">Zapisz połów</string>
+        <string id="MenuViewCatches">Zobacz połowy</string>
+        <string id="MenuSync">Synchronizuj</string>
+        <string id="MenuSettings">Ustawienia</string>
+        <string id="MenuManageBaits">Zarządzaj przynętami</string>
 
         <!-- Log Catch Flow -->
-        <string id="SelectBait">Select Bait</string>
-        <string id="EnterSpecies">Enter Species</string>
-        <string id="EnterWeight">Weight (lbs)</string>
-        <string id="EnterLength">Length (in)</string>
-        <string id="SaveCatch">Save</string>
-        <string id="CancelCatch">Cancel</string>
+        <string id="SelectBait">Wybierz przynętę</string>
+        <string id="EnterSpecies">Wybierz gatunek</string>
+        <string id="EnterWeight">Waga (kg)</string>
+        <string id="EnterLength">Długość (cm)</string>
+        <string id="SaveCatch">Zapisz</string>
+        <string id="CancelCatch">Anuluj</string>
+        <string id="AddCustomSpecies">Dodaj własny gatunek</string>
+        <string id="AddCustomBait">Dodaj przynętę</string>
 
         <!-- Confirmation Messages -->
-        <string id="CatchSaved">Catch Saved!</string>
-        <string id="CatchSaveFailed">Failed to Save</string>
-        <string id="SyncComplete">Sync Complete</string>
-        <string id="SyncFailed">Sync Failed</string>
-        <string id="NoConnection">No Phone Connection</string>
+        <string id="CatchSaved">Połów zapisany!</string>
+        <string id="CatchSaveFailed">Błąd zapisu</string>
+        <string id="SyncComplete">Synchronizacja ukończona</string>
+        <string id="SyncFailed">Synchronizacja nieudana</string>
+        <string id="NoConnection">Brak połączenia z telefonem</string>
 
-        <!-- Species Options -->
-        <string id="SpeciesBass">Bass</string>
-        <string id="SpeciesTrout">Trout</string>
-        <string id="SpeciesPike">Pike</string>
-        <string id="SpeciesSalmon">Salmon</string>
-        <string id="SpeciesCatfish">Catfish</string>
-        <string id="SpeciesWalleye">Walleye</string>
-        <string id="SpeciesOther">Other</string>
+        <!-- Weather -->
+        <string id="WeatherTitle">Pogoda</string>
+        <string id="Temperature">Temperatura</string>
+        <string id="Conditions">Warunki</string>
+        <string id="Pressure">Ciśnienie</string>
+        <string id="WeatherUnavailable">Pogoda niedostępna</string>
+
+        <!-- Bait Management -->
+        <string id="BaitName">Nazwa przynęty</string>
+        <string id="BaitType">Typ przynęty</string>
+        <string id="DeleteBait">Usuń przynętę</string>
+        <string id="BaitAdded">Przynęta dodana</string>
+        <string id="BaitDeleted">Przynęta usunięta</string>
 
         <!-- Empty States -->
-        <string id="NoCatches">No catches logged yet</string>
-        <string id="NoUnsyncedData">All data synced</string>
+        <string id="NoCatches">Brak zapisanych połowów</string>
+        <string id="NoUnsyncedData">Wszystko zsynchronizowane</string>
+
+        <!-- Common -->
+        <string id="Loading">Ładowanie...</string>
+        <string id="Confirm">Potwierdź</string>
+        <string id="Cancel">Anuluj</string>
     </strings>
 </resources>

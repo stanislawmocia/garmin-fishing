@@ -17,7 +17,7 @@ class ViewCatchesView extends WatchUi.Menu2 {
      * @param catches Array of catch objects to display
      */
     function initialize(catches) {
-        Menu2.initialize({:title => "My Catches"});
+        Menu2.initialize({:title => "Moje połowy"});
 
         _catches = catches;
         _buildCatchMenu();
@@ -34,19 +34,40 @@ class ViewCatchesView extends WatchUi.Menu2 {
             // Format the catch for display
             var label = catchObj[:species];
             if (label == null) {
-                label = "Unknown";
+                label = "Nieznany";
             }
 
             var sublabel = "";
+
+            // Weight (kg) and Length (cm)
             if (catchObj[:weight] != null) {
-                sublabel += catchObj[:weight] + " lbs";
+                sublabel += catchObj[:weight] + " kg";
             }
 
             if (catchObj[:length] != null) {
                 if (sublabel.length() > 0) {
                     sublabel += ", ";
                 }
-                sublabel += catchObj[:length] + " in";
+                sublabel += catchObj[:length] + " cm";
+            }
+
+            // Bait name
+            if (catchObj.hasKey(:baitName) && catchObj[:baitName] != null) {
+                if (sublabel.length() > 0) {
+                    sublabel += " | ";
+                }
+                sublabel += catchObj[:baitName];
+            }
+
+            // Weather (temperature)
+            if (catchObj.hasKey(:weather) && catchObj[:weather] != null) {
+                var weather = catchObj[:weather];
+                if (weather.hasKey(:temperature) && weather[:temperature] != null) {
+                    if (sublabel.length() > 0) {
+                        sublabel += " | ";
+                    }
+                    sublabel += weather[:temperature] + "°C";
+                }
             }
 
             // Format timestamp
